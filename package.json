@@ -7,6 +7,7 @@
     "pg": "^6.1.2"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "migrate": "node_modules/db-migrate/bin/db-migrate up"
   }
 }
