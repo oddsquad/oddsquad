@@ -90,6 +90,9 @@ function Guy(id, obj) {
 			var newAtk = new (Attacks[cur.Base || cur.Type] || Attack)(cur);
 			this.attack.push(newAtk);
 		}
+		if(typeof obj.Ability === "string") {
+			obj.Ability = {Base: obj.Ability};
+		}
 		obj.Ability = obj.Ability || [];
 		if(!Array.isArray(obj.Ability)) {
 			obj.Attack = [obj.Ability];
