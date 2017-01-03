@@ -62,6 +62,12 @@ function Ability() {}
 Ability.prototype.toString = function() {
 	return '"'+this.type+'"';
 };
+Ability.unknown = function(type) {
+	var tr = function() {};
+	tr.prototype = Object.create(Ability.prototype);
+	tr.prototype.type = type;
+	return tr;
+};
 
 var Abilities = {};
 
@@ -73,6 +79,15 @@ function newAbility(type, ctor, methods) {
 	}
 	Abilities[type] = ctor;
 }
+
+newAbility("weakershield", function(obj) {
+	this.damage = obj.Damage || 1;
+	this.min = obj.Minimum || 1;
+}, {
+	toString: function() {
+		return "When attacked, take "+this.damage+" less damage, but not less than "+this.min;
+	}
+});
 
 function Guy(id, obj) {
 	this.id = id;
@@ -95,12 +110,12 @@ function Guy(id, obj) {
 		}
 		obj.Ability = obj.Ability || [];
 		if(!Array.isArray(obj.Ability)) {
-			obj.Attack = [obj.Ability];
+			obj.Ability = [obj.Ability];
 		}
 		for(var i = 0; i < obj.Ability.length; i++) {
 			var cur = obj.Ability[i];
-			var newA = new (Abilities[cur.Base || cur.Type] || Ability)(cur);
-			this.attack.push(newA);
+			var newA = new (Abilities[cur.Base || cur.Type] || Ability.unknown(cur.Base || cur.Type))(cur);
+			this.ability.push(newA);
 		}
 	}
 };

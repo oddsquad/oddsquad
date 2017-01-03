@@ -141,10 +141,19 @@ var handleWeb = function(req, res, POST, url) {
 					if(!ensure(!err, err, 500)) return;
 					var tr = content+"";
 					tr = tr.replace("{{NAME}}", card.name);
-					tr = tr.replace("{{ATTACK_TSPANS}}", tspans(wrap(card.attackString()+"\n"+card.abilityString(), {width:25})));
+					tr = tr.replace("{{ATTACK_TSPANS}}", tspans(wrap(card.attackString()+"\n"+card.abilityString(), {width:25, indent:""})));
 					tr = tr.replace("{{CARD_IMAGE}}", "/data/art/"+card.id+".svg");
 					die(200, tr, "image/svg+xml");
 				});
+			});
+		}
+		else if(remains === "cardDebug") {
+			if(!ensure(POST.id, "Card ID missing")) return;
+			loadCard(POST.id, function(err, card) {
+				if(!ensure(!err, err, 500)) return;
+				card.abilityStr = card.abilityString();
+				card.attackStr = card.attackString();
+				die(200, JSON.stringify(card), "application/json");
 			});
 		}
 		else {
