@@ -2,6 +2,12 @@ var http = require('http');
 var bcrypt = require('bcrypt-nodejs');
 var pg = require('pg');
 var hat = require('hat');
+var objects = require('./objects');
+var fs = require('fs');
+var YAML = require('yamljs');
+var wrap = require('word-wrap');
+
+var fileServer = new (require('node-static').Server)('./static');
 
 var PORT = process.env.PORT || 6300;
 var DB_URL = process.env.DATABASE_URL;
@@ -13,6 +19,29 @@ db.connect(function(err) {
 		process.exit();
 	}
 });
+
+var loadCard = function(id, callback) {
+	fs.readFile("data/cards/"+id+".yml", function(err, content) {
+		if(err) {
+			callback(err);
+			return;
+		}
+		try {
+			callback(null, new objects.Guy(id, YAML.parse(content+"")));
+		} catch(e) {
+			callback(e);
+		}
+	});
+};
+var tspans = function(input) {
+	var tr = "";
+	var spl = input.split("\n");
+	for(var i = 0; i < spl.length; i++) {
+		var line = spl[i];
+		tr += "<tspan x=\"0\" dy=\"1em\">"+line+"</tspan>";
+	}
+	return tr;
+};
 
 var handleWeb = function(req, res, POST, url) {
 	var die = function(status, text, type) {
@@ -104,12 +133,26 @@ var handleWeb = function(req, res, POST, url) {
 				});
 			});
 		}
+		else if(remains === "cardArt") {
+			if(!ensure(POST.id, "Card ID missing")) return;
+			loadCard(POST.id, function(err, card) {
+				if(!ensure(!err, err, 500)) return;
+				fs.readFile("data/art/BASE_GUY.svg", function(err, content) {
+					if(!ensure(!err, err, 500)) return;
+					var tr = content+"";
+					tr = tr.replace("{{NAME}}", card.name);
+					tr = tr.replace("{{ATTACK_TSPANS}}", tspans(wrap(card.attackString()+"\n"+card.abilityString(), {width:25})));
+					tr = tr.replace("{{CARD_IMAGE}}", "/data/art/"+card.id+".svg");
+					die(200, tr, "image/svg+xml");
+				});
+			});
+		}
 		else {
 			die(404, "Error 404");
 		}
 	}
 	else {
-		die(404, "Error 404");
+		fileServer.serve(req, res);
 	}
 };
 var webserve = http.createServer(function(req, res) {
