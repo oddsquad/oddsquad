@@ -9,6 +9,7 @@ var objects = require('./objects');
 var fs = require('mz/fs');
 var YAML = require('yamljs');
 var wrap = require('word-wrap');
+var cookies = require('cookies');
 
 var fileServer = new (require('node-static').Server)('./static');
 
@@ -21,10 +22,20 @@ var PACK_DATA = {};
 var db = pgp(DB_URL);
 
 var loadCard = function(id) {
-	return Q.resolve(CARD_DATA[id].parsed);
+	if(id in CARD_DATA) {
+		return Q.resolve(CARD_DATA[id].parsed);
+	}
+	else {
+		return Q.reject("No such card");
+	}
 };
 var loadPack = function(id) {
-	return Q.resolve(PACK_DATA[id].parsed);
+	if(id in PACK_DATA) {
+		return Q.resolve(PACK_DATA[id].parsed);
+	}
+	else {
+		return Q.reject("No such pack");
+	}
 };
 var tspans = function(input) {
 	var tr = "";
@@ -37,6 +48,10 @@ var tspans = function(input) {
 };
 
 var handleWeb = function(req, res, POST, url) {
+	var cookiejar = new cookies(req, res);
+	if(!POST.token) {
+		POST.token = cookiejar.get("os_token");
+	}
 	var die = function(status, text, type) {
 		if(!type) type = "text/plain";
 		if((type.indexOf("text/") === 0 || type === "application/json") && type.indexOf(";") === -1) {
@@ -129,6 +144,7 @@ var handleWeb = function(req, res, POST, url) {
 				bcrypt.compare(POST.password, result.passhash).then(function() {
 					var token = hat();
 					db.none("INSERT INTO tokens (user_id, id, timestamp) VALUES (${user}, ${token}, localtimestamp)", {user: user, token: token}).then(function() {
+						cookiejar.set('os_token', token);
 						util.die(200, token);
 					}, util.fail);
 				})

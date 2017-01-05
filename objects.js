@@ -171,8 +171,15 @@ Pack.prototype.resolve = function(cardData) {
 	return this.cards.concat(this.randomCards.resolve(cardData));
 };
 
-module.exports = {
+var objects = {
 	Guy: Guy,
 	Attacks: Attacks,
 	Pack: Pack
 };
+
+if(typeof window !== "undefined") {
+	window.objects = objects;
+}
+else if(typeof module !== "undefined") {
+	module.exports = objects;
+}
