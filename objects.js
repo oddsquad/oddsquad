@@ -138,7 +138,41 @@ Guy.prototype.abilityString = function() {
 	return "Ability: "+stringList(strings)+".";
 };
 
+function RandomCards(obj) {
+	this.count = obj.Count || 0;
+	this.excludes = obj.Excludes || [];
+	if(!Array.isArray(this.excludes)) {
+		this.excludes = [this.excludes];
+	}
+	this.includes = obj.Includes || [];
+	if(!Array.isArray(this.includes)) {
+		this.includes = [this.includes];
+	}
+}
+RandomCards.prototype.resolve = function(cardData) {
+	var available = [];
+	for(var k in cardData) {
+		available.push(k);
+	}
+	var tr = [];
+	for(var i = 0; i < this.count; i++) {
+		tr.push(available[Math.floor(Math.random()*available.length)]);
+	}
+	return tr;
+};
+
+function Pack(obj) {
+	this.name = obj.Name || "Pack";
+	this.cards = obj.Cards || [];
+	this.randomCards = new RandomCards(obj.RandomCards || {});
+};
+
+Pack.prototype.resolve = function(cardData) {
+	return this.cards.concat(this.randomCards.resolve(cardData));
+};
+
 module.exports = {
 	Guy: Guy,
-	Attacks: Attacks
+	Attacks: Attacks,
+	Pack: Pack
 };

@@ -16,11 +16,15 @@ var PORT = process.env.PORT || 6300;
 var DB_URL = process.env.DATABASE_URL;
 
 var CARD_DATA = {};
+var PACK_DATA = {};
 
 var db = pgp(DB_URL);
 
 var loadCard = function(id) {
 	return Q.resolve(CARD_DATA[id].parsed);
+};
+var loadPack = function(id) {
+	return Q.resolve(PACK_DATA[id].parsed);
 };
 var tspans = function(input) {
 	var tr = "";
@@ -76,14 +80,26 @@ var handleWeb = function(req, res, POST, url) {
 	var data = {
 		req: req,
 		fields: POST,
-		db: db
+		db: db,
+		CARD_DATA: CARD_DATA
 	};
 	var util = {
 		die: die,
 		ensure: ensure,
 		getUser: getUser,
 		loadCard: loadCard,
-		fail: die.bind(util, 500)
+		fail: function(err) {
+			var msg = err+"";
+			var code = 500;
+			if(err instanceof pgp.errors.QueryResultError) {
+				if(err.code === pgp.errors.queryResultErrorCode.noData) {
+					msg = "No such object";
+					code = 404;
+				}
+			}
+			util.die(code, msg);
+		},
+		loadPack: loadPack
 	};
 	if(url.indexOf("/api") === 0) {
 		var remains = url.substring(5);
@@ -92,8 +108,9 @@ var handleWeb = function(req, res, POST, url) {
 				return;
 			}
 			bcrypt.hash(POST.password).then(function(hash) {
-				db.none("INSERT INTO users (name, passhash) VALUES (${name}, ${passhash})", {name: POST.username, passhash: hash}).then(function() {
+				db.one("INSERT INTO users (name, passhash) VALUES (${name}, ${passhash}) RETURNING id", {name: POST.username, passhash: hash}).then(function(data) {
 					die(200, "Success");
+					db.none("INSERT INTO packs (user_id, pack_id, key) VALUES (${user}, 'starter', ${key})", {user: data.id, key: hat()}).catch(console.error);
 				}, function(err) {
 					if(err && err.code === "23505") {
 						die(400, "A user by that name already exists");
@@ -217,22 +234,41 @@ var webserve = http.createServer(function(req, res) {
 });
 
 console.log("Loading cards");
-fs.readdir(__dirname+"/data/cards").then(function(files) {
-	console.log(files);
-	Q.all(files.map(function(file) {
-		if(file.endsWith(".yml")) {
-			return fs.readFile(__dirname+"/data/cards/"+file)
-			.then(function(content) {
-				var data = YAML.parse(content.toString());
-				var id = file.substring(0, file.indexOf(".yml"));
-				var ta = {};
-				ta.rawData = data;
-				ta.parsed = new objects.Guy(id, data);
-				CARD_DATA[id] = ta;
-			});
-		}
-		return Q.resolve();
-	})).then(function() {
-		webserve.listen(PORT);
-	});
-});
+Q.all([
+	fs.readdir(__dirname+"/data/cards").then(function(files) {
+		console.log(files);
+		return Q.all(files.map(function(file) {
+			if(file.endsWith(".yml")) {
+				return fs.readFile(__dirname+"/data/cards/"+file)
+				.then(function(content) {
+					var data = YAML.parse(content.toString());
+					var id = file.substring(0, file.indexOf(".yml"));
+					var ta = {};
+					ta.rawData = data;
+					ta.parsed = new objects.Guy(id, data);
+					CARD_DATA[id] = ta;
+				});
+			}
+			return Q.resolve();
+		}));
+	}),
+	fs.readdir(__dirname+"/data/cardpacks").then(function(files) {
+		console.log(files);
+		return Q.all(files.map(function(file) {
+			if(file.endsWith(".yml")) {
+				return fs.readFile(__dirname+"/data/cardpacks/"+file)
+				.then(function(content) {
+					var data = YAML.parse(content.toString());
+					var id = file.substring(0, file.indexOf(".yml"));
+					var ta = {};
+					ta.rawData = data;
+					ta.parsed = new objects.Pack(data);
+					PACK_DATA[id] = ta;
+				});
+			}
+			return Q.resolve();
+		}));
+	})
+]).then(function() {
+	webserve.listen(PORT);
+}, console.error);
