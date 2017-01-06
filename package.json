@@ -5,10 +5,12 @@
     "db-migrate": "^0.10.0-beta.20",
     "db-migrate-pg": "^0.1.11",
     "hat": "0.0.3",
+    "multiparty": "^4.1.2",
     "mz": "^2.6.0",
     "node-static": "^0.7.9",
     "pg-promise": "^5.5.0",
     "q": "^1.4.1",
+    "twig": "^0.10.3",
     "word-wrap": "^1.2.0",
     "yamljs": "^0.2.8"
   },

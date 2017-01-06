@@ -10,6 +10,8 @@ var fs = require('mz/fs');
 var YAML = require('yamljs');
 var wrap = require('word-wrap');
 var cookies = require('cookies');
+var twig = require('twig');
+var multiparty = require('multiparty');
 
 var fileServer = new (require('node-static').Server)('./static');
 
@@ -18,6 +20,8 @@ var DB_URL = process.env.DATABASE_URL;
 
 var CARD_DATA = {};
 var PACK_DATA = {};
+
+var TWIG_VARS = {};
 
 var db = pgp(DB_URL);
 
@@ -204,7 +208,37 @@ var handleWeb = function(req, res, POST, url) {
 		}
 	}
 	else {
-		fileServer.serve(req, res);
+		fileServer.serve(req, res, function(err, result) {
+			if(err) {
+				if(err.status === 404) {
+					var file = "./pages"+req.url+".twig";
+					fs.readFile(file).then(function(content) {
+						var template = twig.twig({
+							data: content.toString()
+						});
+						console.log(template);
+						return template.render(TWIG_VARS);
+					})
+					.then(function(content) {
+						console.log(content);
+						die(200, content, "text/html");
+					})
+					.catch(function(err) {
+						if(err.errno === -2) {
+							die(404, "Error 404");
+							return;
+						}
+						console.error(err);
+						die(500, "Error 500");
+					});
+				}
+				else {
+					res.writeHead(err.status, err.headers);
+					res.write("Error "+err.status);
+					res.end();
+				}
+			}
+		});
 	}
 };
 var webserve = http.createServer(function(req, res) {
@@ -280,6 +314,17 @@ Q.all([
 					ta.rawData = data;
 					ta.parsed = new objects.Pack(data);
 					PACK_DATA[id] = ta;
+				});
+			}
+			return Q.resolve();
+		}));
+	}),
+	fs.readdir(__dirname+"/includes").then(function(files) {
+		return Q.all(files.map(function(file) {
+			if(file.endsWith(".html")) {
+				return fs.readFile(__dirname+"/includes/"+file)
+				.then(function(content) {
+					TWIG_VARS[file.substring(0, file.length-5)] = content.toString();
 				});
 			}
 			return Q.resolve();

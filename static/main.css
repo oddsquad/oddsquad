@@ -1,0 +1,33 @@
+body {
+	margin: 0
+}
+#tabs {
+	background-color: blue;
+	display: flex;
+}
+#tabs a {
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+	display: inline-block;
+	border-right: 1px solid white
+}
+#tabs a:first-child {
+	font-weight: bold
+}
+#tabs a.rightTab {
+	margin-left: auto;
+	border-left: 1px solid white;
+}
+a.notLoggedIn:not(body) {
+	display: none !important
+}
+a.loggedIn:not(body) {
+	display: none !important
+}
+body.notLoggedIn  .notLoggedIn {
+	display: inherit !important
+}
+body.loggedIn  .loggedIn {
+	display: inherit !important
+}

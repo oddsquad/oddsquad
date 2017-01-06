@@ -1,8 +1,8 @@
+{{ DOCTYPE }}
 <html>
 	<head>
 		<title>My Collection</title>
-		<script type="text/javascript" src="/js/ext/q.js"></script>
-		<script type="text/javascript" src="/js/util.js"></script>
+		{{ SCRIPTS }}
 		<script type="text/javascript">
 			var loadCard = function(id) {
 				return Q.all([
@@ -39,6 +39,6 @@
 		</style>
 	</head>
 	<body>
-
+		{{ PAGE_HEADER }}
 	</body>
 </html>

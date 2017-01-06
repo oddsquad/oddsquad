@@ -1,0 +1,33 @@
+{{ DOCTYPE }}
+<html>
+	<head>
+		{{ SCRIPTS }}
+		<title>Login</title>
+		<script type="text/javascript">
+			waitForWindowLoad()
+			.then(function() {
+				document.getElementById('loginForm')
+					.onsubmit = function(e) {
+						e.preventDefault();
+						document.getElementById('error').textContent = " ";
+						request(this.method, this.action, new FormData(this))
+							.then(function() {
+								location.assign(document.referrer);
+							})
+						.catch(function(err) {
+							document.getElementById('error').textContent = err;
+						});
+					};
+			});
+		</script>
+	</head>
+	<body>
+		{{ PAGE_HEADER }}
+		<pre id="error"></pre>
+		<form method="post" action="/api/login" id="loginForm">
+			<input type="text" name="username" />
+			<input type="password" name="password" />
+			<button>Login</button>
+		</form>
+	</body>
+</html>

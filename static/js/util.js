@@ -75,3 +75,51 @@ window.addEventListener('load', function() {
 	windowLoaded = true;
 	WINDOW_CALLBACKS.map(function(e) {e();});
 });
+
+
+var CALLBACKS = {};
+
+var completed = {};
+
+function waitFor(type) {
+	if(!(type in CALLBACKS)) {
+		CALLBACKS[type] = [];
+	}
+	var callback = Q.defer();
+	CALLBACKS[type].push(callback);
+	if(type in completed) {
+		callback.resolve(completed[type]);
+	}
+	return callback.promise;
+}
+
+function completeWaitee(type, value) {
+	completed[type] = value;
+	if(!(type in CALLBACKS)) return;
+	CALLBACKS[type].forEach(function(elem) {
+		elem.resolve(value);
+	});
+}
+
+request("GET", "/api/user")
+.then(function(res) {
+	var j = JSON.parse(res);
+	completeWaitee("user", j);
+}).catch(function(err) {
+	console.log(err);
+	completeWaitee("user", null);
+});
+
+waitFor("user")
+.then(function(USER) {
+	waitForWindowLoad()
+	.then(function() {
+		if(USER) {
+			document.body.className = "loggedIn";
+			document.getElementById('userTab').textContent = USER.name;
+		}
+		else {
+			document.body.className = "notLoggedIn";
+		}
+	});
+});
