@@ -4,24 +4,13 @@
 		<title>My Collection</title>
 		{{ SCRIPTS }}
 		<script type="text/javascript">
-			var loadCard = function(id) {
-				return Q.all([
-					loadSVG("/api/cardArt?id="+id, document.body, "card collectionCard"),
-					request("GET", "/api/rawCard?id="+id)
-				])
-					.then(function(data) {
-						var info = JSON.parse(data[1]);
-						data[0].contentDocument.getElementById('health').textContent = info.Health;
-						return {obj: data[0], info: info};
-					});
-			};
 			request("GET", "/api/myCards")
 			.then(function(res) {
 				return waitForWindowLoad()
 					.then(function() {
 						var j = JSON.parse(res);
 						return Q.all(j.map(function(e) {
-							return loadCard(e.card_id)
+							return loadCard(e.card_id, document.body, "collectionCard")
 								.catch(function(err) {
 									console.warn(err);
 								});

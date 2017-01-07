@@ -1,0 +1,125 @@
+{{ DOCTYPE }}
+<html>
+	<head>
+		<title>Open Packs</title>
+		{{ SCRIPTS }}
+		<script type="text/javascript">
+			var RADIUS = "12em";
+			var currentPack = null;
+			function handlePackClick() {
+				if(currentPack) {
+					return;
+				}
+				currentPack = this;
+				document.getElementById('leftSidebar').removeChild(this);
+				document.getElementById('mainContent').appendChild(this);
+				var self = this;
+				var highZIndex = 5;
+				var fd = new FormData();
+				fd.append('key', this.dataset.key);
+				Q.all([
+					request("POST", "/api/openPack", fd),
+					Q.delay(1000)
+				]).then(function(data) {
+					var cards = JSON.parse(data[0]);
+					document.getElementById('packCrack').style.display = "initial";
+					setTimeout(function() {
+						self.style.display = "none";
+						for(var i = 0; i < cards.length; i++) {
+							var deg = 360*i/cards.length+"deg";
+							var elem = document.createElement('div');
+							elem.style.transform = "translate(-50%,-50%) rotate("+deg+") translate("+RADIUS+") rotate(-"+deg+")";
+							elem.className = "card";
+							elem.onmouseover = function() {
+								if(this.style.zIndex != highZIndex) {
+									this.style.zIndex = ++highZIndex;
+								}
+							};
+							document.getElementById('mainContent').appendChild(elem);
+							loadCard(cards[i], elem, "");
+						}
+						document.getElementById('doneBtn').style.display = "initial";
+					}, 4000);
+				});
+			}
+			function done() {
+				var remove = function(list) {
+					console.log(list);
+					while(list.length > 0) {
+						list[0].parentNode.removeChild(list[0]);
+					}
+				};
+				remove(document.getElementsByClassName('card'));
+				document.getElementById('packCrack').style.display = "none";
+				document.getElementById('doneBtn').style.display = "none";
+				currentPack = null;
+			}
+			request("GET", "/api/myPacks")
+			.then(function(res) {
+				var j = JSON.parse(res);
+				console.log(j);
+				var sidebar = document.getElementById('leftSidebar');
+				sidebar.textContent = "";
+				for(var key in j) {
+					var elem = document.createElement('div');
+					elem.className = "pack";
+					elem.dataset.key = key;
+					elem.onclick = handlePackClick;
+					sidebar.appendChild(elem);
+					loadSVG("/data/art/packs/"+j[key]+".svg", elem, "");
+				}
+			});
+		</script>
+		<style type="text/css">
+			#leftSidebar {
+				height: 100%
+			}
+			body {
+				display: flex;
+				flex-direction: column;
+				overflow: hidden
+			}
+			.sidebarBody {
+				display: flex;
+				flex-direction: row;
+				flex: 1 0 auto;
+			}
+			.pack object, .card object, #packCrack {
+				pointer-events: none
+			}
+			#mainContent {
+				flex: 1 0 auto;
+				position: relative
+			}
+			#mainContent .pack {
+				width: 25%
+			}
+			#mainContent .pack, #packCrack, #mainContent .card, #doneBtn {
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+			}
+			#packCrack {
+				width: 100%;
+				z-index: 100;
+				display: none
+			}
+			#mainContent .card {
+				width: 20%
+			}
+		</style>
+	</head>
+	<body>
+		{{ PAGE_HEADER }}
+		<div class="sidebarBody">
+			<div id="leftSidebar" style="background-color: red; width: 20%">
+				Loading...
+			</div>
+			<div id="mainContent">
+				<object id="packCrack" data="/data/art/animation/packCrack.svg"></object>
+				<button id="doneBtn" style="display: none" onclick="done()">Done</button>
+			</div>
+		</div>
+	</body>
+</html>

@@ -148,7 +148,7 @@ var handleWeb = function(req, res, POST, url) {
 				bcrypt.compare(POST.password, result.passhash).then(function() {
 					var token = hat();
 					db.none("INSERT INTO tokens (user_id, id, timestamp) VALUES (${user}, ${token}, localtimestamp)", {user: user, token: token}).then(function() {
-						cookiejar.set('os_token', token);
+						cookiejar.set('os_token', token, {maxAge: 5000000000});
 						util.die(200, token);
 					}, util.fail);
 				})

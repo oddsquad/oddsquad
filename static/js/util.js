@@ -123,3 +123,16 @@ waitFor("user")
 		}
 	});
 });
+
+var loadCard = function(id, container, className) {
+	className = className || "";
+	return Q.all([
+		loadSVG("/api/cardArt?id="+id, container, className || ""),
+		request("GET", "/api/rawCard?id="+id)
+	])
+		.then(function(data) {
+			var info = JSON.parse(data[1]);
+			data[0].contentDocument.getElementById('health').textContent = info.Health;
+			return {obj: data[0], info: info};
+		});
+};
