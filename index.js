@@ -167,7 +167,6 @@ var handleWeb = function(req, res, POST, url) {
 			promise.then(function(user) {
 				db.one("SELECT id, name FROM users WHERE id=${user}", {user: user})
 				.then(function(result) {
-					console.log(JSON.stringify(result));
 					die(200, JSON.stringify(result), "application/json");
 				}, util.fail);
 			}, util.fail);
@@ -216,11 +215,9 @@ var handleWeb = function(req, res, POST, url) {
 						var template = twig.twig({
 							data: content.toString()
 						});
-						console.log(template);
 						return template.render(TWIG_VARS);
 					})
 					.then(function(content) {
-						console.log(content);
 						die(200, content, "text/html");
 					})
 					.catch(function(err) {
@@ -228,7 +225,6 @@ var handleWeb = function(req, res, POST, url) {
 							die(404, "Error 404");
 							return;
 						}
-						console.error(err);
 						die(500, "Error 500");
 					});
 				}
