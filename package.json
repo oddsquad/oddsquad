@@ -33,7 +33,8 @@
     "build": "node_modules/.bin/webpack -p",
     "watch:build": "node_modules/.bin/webpack --watch",
     "watch:server": "node_modules/.bin/nodemon index.js --watch includes --watch pages --watch api -e js,html,twig",
-    "dev": "node_modules/.bin/npm-run-all --parallel watch:server watch:build"
+    "dev": "node_modules/.bin/npm-run-all --parallel watch:server watch:build",
+    "heroku-postbuild": "node_modules/.bin/webpack -p"
   },
   "devDependencies": {
     "nodemon": "^1.11.0",
