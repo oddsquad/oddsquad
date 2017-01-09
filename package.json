@@ -16,6 +16,16 @@
   },
   "scripts": {
     "start": "node index.js",
-    "migrate": "node_modules/db-migrate/bin/db-migrate up"
+    "migrate": "node_modules/db-migrate/bin/db-migrate up",
+    "build": "node_modules/.bin/webpack",
+    "watch:build": "node_modules/.bin/webpack --watch",
+    "watch:server": "node_modules/.bin/nodemon index.js --watch includes --watch pages --watch api -e js,html,twig",
+    "dev": "node_modules/.bin/npm-run-all --parallel watch:server watch:build"
+  },
+  "devDependencies": {
+    "expose-loader": "^0.7.1",
+    "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.0",
+    "webpack": "^2.2.0-rc.3"
   }
 }

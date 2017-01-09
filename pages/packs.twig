@@ -18,7 +18,7 @@
 				var fd = new FormData();
 				fd.append('key', this.dataset.key);
 				Q.all([
-					request("POST", "/api/openPack", fd),
+					util.request("POST", "/api/openPack", fd),
 					Q.delay(1000)
 				]).then(function(data) {
 					var cards = JSON.parse(data[0]);
@@ -36,7 +36,7 @@
 								}
 							};
 							document.getElementById('mainContent').appendChild(elem);
-							loadCard(cards[i], elem, "");
+							util.loadCard(cards[i], elem, "");
 						}
 						document.getElementById('doneBtn').style.display = "initial";
 					}, 4000);
@@ -54,7 +54,7 @@
 				document.getElementById('doneBtn').style.display = "none";
 				currentPack = null;
 			}
-			request("GET", "/api/myPacks")
+			util.request("GET", "/api/myPacks")
 			.then(function(res) {
 				var j = JSON.parse(res);
 				console.log(j);
@@ -66,7 +66,7 @@
 					elem.dataset.key = key;
 					elem.onclick = handlePackClick;
 					sidebar.appendChild(elem);
-					loadSVG("/data/art/packs/"+j[key]+".svg", elem, "");
+					util.loadSVG("/data/art/packs/"+j[key]+".svg", elem, "");
 				}
 			});
 		</script>

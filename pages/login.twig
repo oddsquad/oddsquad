@@ -4,13 +4,13 @@
 		{{ SCRIPTS }}
 		<title>Login</title>
 		<script type="text/javascript">
-			waitForWindowLoad()
+			util.waitForWindowLoad()
 			.then(function() {
 				document.getElementById('loginForm')
 					.onsubmit = function(e) {
 						e.preventDefault();
 						document.getElementById('error').textContent = " ";
-						request(this.method, this.action, new FormData(this))
+						util.request(this.method, this.action, new FormData(this))
 							.then(function() {
 								location.assign(document.referrer);
 							})
