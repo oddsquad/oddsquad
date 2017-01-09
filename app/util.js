@@ -117,6 +117,10 @@ util.waitFor("user")
 			document.body.className = "loggedIn";
 			var userTab = document.getElementById('userTab');
 			userTab.textContent = USER.name;
+			var caret = document.createElement('span');
+			caret.textContent = "\u25BE";
+			caret.className = "dropdownArrow";
+			userTab.appendChild(caret);
 			util.waitFor("coins")
 			.then(function(coins) {
 				var coinSpan = document.createElement('span');

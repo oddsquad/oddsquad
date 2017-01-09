@@ -10,19 +10,14 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li><a href="/packs" class="loggedIn" id="packTab"></a></li>
 				<li><a href="/api/myCoins" class="loggedIn" id="coinTab"></a></li>
-				<li><a href="/api/user" class="loggedIn" id="userTab">User</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" class="loggedIn" id="userTab">User</a>
+					<ul class="dropdown-menu">
+						<li><a href="/api/user">Info</a></li>
+					</ul>
+				</li>
 				<li><a href="/login" class="notLoggedIn">Login</a></li>
 			</ul>
 		</div>
 	</div>
 </nav>
-<!--<div id="header">
-	<span id="tabs">
-		<a href="/">Odd Squad</a>
-		<a href="/myCards">Collection</a>
-		<a id="headerFiller" style="flex-grow: 1"></a>
-		<a href="/api/myCoins" class="loggedIn" id="coinTab"></a>
-		<a href="/api/user" class="loggedIn" id="userTab">User</a>
-		<a href="/login" class="notLoggedIn">Login</a>
-	</span>
-</div>-->

@@ -12,6 +12,7 @@
     "file-loader": "^0.9.0",
     "hat": "0.0.3",
     "imports-loader": "^0.7.0",
+    "jquery": "^3.1.1",
     "less": "^2.7.2",
     "less-loader": "^2.2.3",
     "multiparty": "^4.1.2",
@@ -29,7 +30,7 @@
   "scripts": {
     "start": "node index.js",
     "migrate": "node_modules/db-migrate/bin/db-migrate up",
-    "build": "node_modules/.bin/webpack",
+    "build": "node_modules/.bin/webpack -p",
     "watch:build": "node_modules/.bin/webpack --watch",
     "watch:server": "node_modules/.bin/nodemon index.js --watch includes --watch pages --watch api -e js,html,twig",
     "dev": "node_modules/.bin/npm-run-all --parallel watch:server watch:build"

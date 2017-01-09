@@ -15,3 +15,6 @@ body:not(.loggedIn):not(.notLoggedIn) a.notLoggedIn {
 body {
 	height: 100vh
 }
+.dropdownArrow {
+	float: right
+}

@@ -1,6 +1,7 @@
 module.exports = {
 	scripts: {
-	
+		"dropdown": true,
+		"button": true
 	},
 	styles: {
 		"mixins": true,
@@ -10,6 +11,8 @@ module.exports = {
 		"utilities": true,
 		"type": true,
 		"navs": true,
-		"scaffolding": true
+		"scaffolding": true,
+		"dropdowns": true,
+		"theme": true
 	}
 };
