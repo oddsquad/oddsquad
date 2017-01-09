@@ -110,13 +110,32 @@ request("GET", "/api/user")
 	completeWaitee("user", null);
 });
 
+request("GET", "/api/myCoins")
+.then(function(res) {
+	completeWaitee("coins", res);
+}).catch(function(err) {
+	console.error(err);
+	alert(err);
+});
+
 waitFor("user")
 .then(function(USER) {
 	waitForWindowLoad()
 	.then(function() {
 		if(USER) {
 			document.body.className = "loggedIn";
-			document.getElementById('userTab').textContent = USER.name;
+			var userTab = document.getElementById('userTab');
+			userTab.textContent = USER.name;
+			waitFor("coins")
+			.then(function(coins) {
+				var coinSpan = document.createElement('span');
+				document.getElementById('coinTab').appendChild(coinSpan);
+				coinSpan.appendChild(document.createTextNode(coins));
+				var coinImg = document.createElement('img');
+				coinImg.src = "/data/art/oddball.svg";
+				coinImg.className = "coinImg";
+				coinSpan.appendChild(coinImg);
+			});
 		}
 		else {
 			document.body.className = "notLoggedIn";
