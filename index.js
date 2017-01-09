@@ -14,6 +14,7 @@ var twig = require('twig');
 var multiparty = require('multiparty');
 
 var fileServer = new (require('node-static').Server)('./static');
+var distServer = new (require('node-static').Server)('./dist');
 
 var PORT = process.env.PORT || 6300;
 var DB_URL = process.env.DATABASE_URL;
@@ -210,22 +211,33 @@ var handleWeb = function(req, res, POST, url) {
 		fileServer.serve(req, res, function(err, result) {
 			if(err) {
 				if(err.status === 404) {
-					var file = "./pages"+req.url+".twig";
-					fs.readFile(file).then(function(content) {
-						var template = twig.twig({
-							data: content.toString()
-						});
-						return template.render(TWIG_VARS);
-					})
-					.then(function(content) {
-						die(200, content, "text/html");
-					})
-					.catch(function(err) {
-						if(err.errno === -2) {
-							die(404, "Error 404");
-							return;
+					distServer.serve(req, res, function(err, result) {
+						if(err) {
+							if(err.status === 404) {
+								var file = "./pages"+req.url+".twig";
+								fs.readFile(file).then(function(content) {
+									var template = twig.twig({
+										data: content.toString()
+									});
+									return template.render(TWIG_VARS);
+								})
+								.then(function(content) {
+									die(200, content, "text/html");
+								})
+								.catch(function(err) {
+									if(err.errno === -2) {
+										die(404, "Error 404");
+										return;
+									}
+									die(500, "Error 500");
+								});
+							}
+							else {
+								res.writeHead(err.status, err.headers);
+								res.write("Error "+err.status);
+								res.end();
+							}
 						}
-						die(500, "Error 500");
 					});
 				}
 				else {

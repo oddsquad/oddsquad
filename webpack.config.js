@@ -9,5 +9,20 @@ module.exports = {
 		new webpack.ProvidePlugin({
 			jQuery: "jquery"
 		})
-	]
+	],
+	module: {
+		loaders: [
+			{
+				test: /\.svg$/,
+				use: [
+					{
+						loader: "file-loader"
+					},
+					{
+						loader: "svgo-loader"
+					}
+				]
+			}
+		]
+	}
 };

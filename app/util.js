@@ -127,7 +127,7 @@ util.waitFor("user")
 				document.getElementById('coinTab').appendChild(coinSpan);
 				coinSpan.appendChild(document.createTextNode(coins));
 				var coinImg = document.createElement('img');
-				coinImg.src = "/data/art/oddball.svg";
+				coinImg.src = require('../data/art/oddball.svg');
 				coinImg.className = "coinImg";
 				coinSpan.appendChild(coinImg);
 			});
@@ -137,7 +137,7 @@ util.waitFor("user")
 				document.getElementById('packTab').appendChild(packSpan);
 				packSpan.appendChild(document.createTextNode(Object.keys(packs).length));
 				var packImg = document.createElement('img');
-				packImg.src = "/data/art/packs/randomMI.svg";
+				packImg.src = require("../data/art/packs/randomMI.svg");
 				packImg.className = "coinImg packImg";
 				packSpan.appendChild(packImg);
 			});
