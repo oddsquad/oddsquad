@@ -99,8 +99,15 @@ util.request("GET", "/api/myCoins")
 	completeWaitee("coins", res);
 }).catch(function(err) {
 	console.error(err);
-	alert(err);
 });
+
+util.request("GET", "/api/myPacks")
+.then(function(res) {
+	completeWaitee("packs", JSON.parse(res));
+}).catch(function(err) {
+	console.error(err);
+});
+
 
 util.waitFor("user")
 .then(function(USER) {
@@ -120,12 +127,33 @@ util.waitFor("user")
 				coinImg.className = "coinImg";
 				coinSpan.appendChild(coinImg);
 			});
+			util.waitFor("packs")
+			.then(function(packs) {
+				var packSpan = document.createElement('span');
+				document.getElementById('packTab').appendChild(packSpan);
+				packSpan.appendChild(document.createTextNode(Object.keys(packs).length));
+				var packImg = document.createElement('img');
+				packImg.src = "/data/art/packs/randomMI.svg";
+				packImg.className = "coinImg packImg";
+				packSpan.appendChild(packImg);
+			});
 		}
 		else {
 			document.body.className = "notLoggedIn";
 		}
 	});
 });
-
+util.waitForWindowLoad()
+.then(function() {
+	var navs = document.getElementsByClassName('navbar-nav');
+	for(var i = 0; i < navs.length; i++) {
+		var lis = navs[i].getElementsByTagName('li');
+		for(var j = 0; j < lis.length; j++) {
+			if(lis[j].getElementsByTagName('a')[0].href == location.href) {
+				lis[j].className += " active";
+			}
+		}
+	}
+});
 
 module.exports = util;

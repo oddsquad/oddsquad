@@ -54,10 +54,8 @@
 				document.getElementById('doneBtn').style.display = "none";
 				currentPack = null;
 			}
-			util.request("GET", "/api/myPacks")
-			.then(function(res) {
-				var j = JSON.parse(res);
-				console.log(j);
+			util.waitFor("packs")
+			.then(function(j) {
 				var sidebar = document.getElementById('leftSidebar');
 				sidebar.textContent = "";
 				for(var key in j) {

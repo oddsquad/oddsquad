@@ -3,8 +3,13 @@ module.exports = {
 	
 	},
 	styles: {
-		"dropdowns": true,
 		"mixins": true,
-		"buttons": true
+		"buttons": true,
+		"navbar": true,
+		"forms": true,
+		"utilities": true,
+		"type": true,
+		"navs": true,
+		"scaffolding": true
 	}
 };
