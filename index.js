@@ -291,6 +291,8 @@ var webserve = http.createServer(function(req, res) {
 	}
 });
 
+require('./gameserver')(webserve);
+
 console.log("Loading cards");
 Q.all([
 	fs.readdir(__dirname+"/data/cards").then(function(files) {

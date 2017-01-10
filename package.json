@@ -22,6 +22,8 @@
     "pg-promise": "^5.5.0",
     "q": "^1.4.1",
     "sass-loader": "^4.1.1",
+    "socket.io": "^1.7.2",
+    "socket.io-client": "^1.7.2",
     "style-loader": "^0.13.1",
     "svgo-loader": "^1.1.2",
     "twig": "^0.10.3",
