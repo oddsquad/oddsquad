@@ -138,7 +138,7 @@ util.waitFor("user")
 				packSpan.appendChild(document.createTextNode(Object.keys(packs).length));
 				var packImg = document.createElement('img');
 				packImg.src = require("../data/art/packs/randomMI.svg");
-				packImg.className = "coinImg packImg";
+				packImg.className = "packImg";
 				packSpan.appendChild(packImg);
 			});
 		}

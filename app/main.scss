@@ -1,0 +1,33 @@
+body:not(.notLoggedIn) a.notLoggedIn,
+body:not(.loggedIn) a.loggedIn {
+	display: none !important
+}
+body:not(.loggedIn):not(.notLoggedIn) {
+	a.loggedIn, a.notLoggedIn {
+		display: none !important
+	}
+}
+.coinImg {
+	height: 1.4em;
+}
+.packImg {
+	@extend .coinImg;
+	transform: rotate(10deg);
+	padding-left: 2px
+}
+html {
+	height: 100%;
+	padding-right: 0
+}
+body {
+	height: 100%
+}
+.dropdownArrow {
+	float: right
+}
+.navbar-default .navbar-toggle .icon-bar {
+	background-color: #444
+}
+.container-fluid > .navbar-header {
+	margin: 0
+}
