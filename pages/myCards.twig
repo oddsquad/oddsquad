@@ -9,8 +9,35 @@
 				return util.waitForWindowLoad()
 					.then(function() {
 						var j = JSON.parse(res);
-						return Q.all(j.map(function(e) {
+						var cards = [];
+						j.forEach(function(elem) {
+							var oldOne = null;
+							cards.forEach(function(ele2) {
+								if(ele2.card_id == elem.card_id) {
+									oldOne = ele2;
+								}
+							});
+							if(!oldOne) {
+								cards.push({
+									card_id: elem.card_id,
+									count: 1
+								});
+							}
+							else {
+								oldOne.count++;
+							}
+						});
+						return Q.all(cards.map(function(e) {
 							return util.loadCard(e.card_id, document.body, "collectionCard")
+								.then(function(obj) {
+									var svgNS = "http://www.w3.org/2000/svg";
+									var count = document.createElementNS(svgNS, "text");
+									count.textContent = "x"+e.count;
+									count.setAttribute("x", 95);
+									count.setAttribute("y", 145);
+									count.style.textAnchor = "end";
+									obj.obj.contentDocument.rootElement.appendChild(count);
+								})
 								.catch(function(err) {
 									console.warn(err);
 								});
