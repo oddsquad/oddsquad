@@ -28,7 +28,7 @@
 							}
 						});
 						return Q.all(cards.map(function(e) {
-							return util.loadCard(e.card_id, document.body, "collectionCard")
+							return util.loadCard(e.card_id, document.getElementById('mainContent'), "collectionCard")
 								.then(function(obj) {
 									var svgNS = "http://www.w3.org/2000/svg";
 									var count = document.createElementNS(svgNS, "text");
@@ -50,11 +50,30 @@
 		</script>
 		<style type="text/css">
 			.collectionCard {
-				width: 15%
+				width: 20%
+			}
+			#mainContent {
+				flex: 1 0 auto
+			}
+			.leftSidebar {
+				width: 15%;
+				background-color: red
+			}
+			#deckInfo {
+				display: none
 			}
 		</style>
 	</head>
 	<body>
 		{{ PAGE_HEADER }}
+		<div class="sidebarBody">
+			<div class="leftSidebar" id="deckList">
+			</div>
+			<div class="leftSidebar" id="deckInfo">
+			</div>
+			<div id="mainContent">
+
+			</div>
+		</div>
 	</body>
 </html>
