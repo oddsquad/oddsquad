@@ -14,10 +14,6 @@ module.exports = {
 			name: "jquery",
 			minChunks: Infinity
 		}),
-		new webpack.optimize.CommonsChunkPlugin({
-			name: "common",
-			minChunks: 2
-		}),
 		new webpack.ProvidePlugin({
 			jQuery: "jquery-slim"
 		})
