@@ -119,7 +119,38 @@ var handleWeb = function(req, res, POST, url) {
 			}
 			util.die(code, msg);
 		},
-		loadPack: loadPack
+		loadPack: loadPack,
+		validateDeck: function(user, deck) {
+			if(!deck.guys || deck.guys.length < 6) {
+				return Q.reject("Not enough guys");
+			}
+			if(deck.guys.length > 6) {
+				return Q.reject("Too many guys");
+			}
+			if(deck.items && deck.items.length > 10) {
+				return Q.reject("Too many items");
+			}
+			return db.many("SELECT * FROM collection WHERE user_id=${user}", {user, user})
+			.then(function(cards) {
+				var yourCards = cards.map(function(ele) {
+					return ele.card_id;
+				});
+				var deckCards = deck.guys.concat(deck.items || []);
+				for(var i = 0; i < deckCards.length; i++) {
+					var index = yourCards.indexOf(deckCards[i]);
+					if(index < 0) {
+						return Q.reject("You don't have \""+deckCards[i]+"\".  Too bad.");
+					}
+					yourCards.splice(index, 1);
+				}
+				for(var i = 0; i < deckCards.length; i++) {
+					if(!(deckCards[i] in CARD_DATA)) {
+						return Q.reject("\""+deckCards[i]+"\" doesn't exist");
+					}
+				}
+				return Q.resolve();
+			});
+		}
 	};
 	if(url.indexOf("/api") === 0) {
 		var remains = url.substring(5);
