@@ -3,7 +3,7 @@ module.exports = {
 	entry: {
 		index: "./app/index.js",
 		game: "./app/game.js",
-		jquery: "jquery"
+		jquery: "jquery-slim"
 	},
 	output: {
 		filename: "bundle-[name].js",
@@ -19,7 +19,7 @@ module.exports = {
 			minChunks: 2
 		}),
 		new webpack.ProvidePlugin({
-			jQuery: "jquery"
+			jQuery: "jquery-slim"
 		})
 	],
 	module: {
