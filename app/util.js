@@ -28,6 +28,7 @@ var util = {
 		obj.onerror = function(e) {
 			console.log(e);
 			callback.reject(e);
+			container.removeChild(obj);
 		}
 		obj.data = url;
 		container.appendChild(obj);

@@ -7,6 +7,7 @@
 			var RADIUS = "100%";
 			var currentPack = null;
 			function handlePackClick() {
+				console.log("click");
 				if(currentPack) {
 					return;
 				}
@@ -62,7 +63,7 @@
 					var elem = document.createElement('div');
 					elem.className = "pack";
 					elem.dataset.key = key;
-					elem.onclick = handlePackClick;
+					elem.onmouseup = handlePackClick;
 					sidebar.appendChild(elem);
 					util.loadSVG("/data/art/packs/"+j[key]+".svg", elem, "");
 				}
@@ -73,8 +74,7 @@
 				pointer-events: none
 			}
 			#mainContent {
-				flex: 1 0 auto;
-				position: relative
+				height: 100%;
 			}
 			#mainContent .pack {
 				width: 25%
@@ -100,8 +100,8 @@
 	</head>
 	<body>
 		{{ PAGE_HEADER }}
-		<div class="sidebarBody">
-			<div id="leftSidebar" style="background-color: red; width: 15%">
+		<div class="container-fluid sidebarBody" style="flex: 1 1 auto; height: 100%">
+			<div id="leftSidebar" style="background-color: red; height: 100%" class="col-xs-2 col-lg-1">
 				Loading...
 			</div>
 			<div id="mainContent">

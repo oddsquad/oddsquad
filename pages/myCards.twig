@@ -28,7 +28,7 @@
 							}
 						});
 						return Q.all(cards.map(function(e) {
-							return util.loadCard(e.card_id, document.getElementById('mainContent'), "collectionCard")
+							return util.loadCard(e.card_id, document.getElementById('mainContent'), "collectionCard col-xs-4 col-md-3 col-lg-2")
 								.then(function(obj) {
 									var svgNS = "http://www.w3.org/2000/svg";
 									var count = document.createElementNS(svgNS, "text");
@@ -50,50 +50,28 @@
 		</script>
 		<style type="text/css">
 			.collectionCard {
-				width: 20%
+				padding-bottom: 15px
 			}
 			#mainContent {
-				flex: 1 1 auto;
+				height: 100%;
 				position: relative;
 				overflow: auto
 			}
 			.leftSidebar {
-				flex: 0 0 15%;
-				background-color: red
+				background-color: red;
+				height: 100%
 			}
 			#deckInfo {
 				display: none
-			}
-			@media screen and (min-width: 1400px) {
-				.collectionCard {
-					width: 15%
-				}
-			}
-			@media screen and (max-width: 800px) {
-				.collectionCard {
-					width: 33%
-				}
-			}
-			@media screen and (max-width: 400px) {
-				.collectionCard {
-					width: 50%
-				}
-			}
-			@media screen and (max-width: 240px) {
-				.collectionCard {
-					width: 100%
-				}
 			}
 		</style>
 	</head>
 	<body>
 		{{ PAGE_HEADER }}
-		<div class="sidebarBody">
-			<div class="leftSidebar" id="deckList">
+		<div class="container-fluid sidebarBody" style="height: 100%">
+			<div class="leftSidebar col-xs-2 col-lg-1" id="leftSidebar">
 			</div>
-			<div class="leftSidebar" id="deckInfo">
-			</div>
-			<div id="mainContent">
+			<div id="mainContent" class="container-fluid">
 
 			</div>
 		</div>
