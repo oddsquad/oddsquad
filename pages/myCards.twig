@@ -47,6 +47,38 @@
 			.catch(function(err) {
 				console.error(err);
 			});
+			util.request("GET", "/api/myDecks")
+			.then(function(res) {
+				return util.waitForWindowLoad()
+					.then(function() {
+						var j = JSON.parse(res);
+						var list = document.getElementById('deckList');
+						for(var key in j) {
+							var elem = document.createElement('a');
+							elem.href = "#"+key;
+							elem.textContent = j[key];
+							elem.className = "list-group-item";
+							list.appendChild(elem);
+						}
+					});
+			})
+			.catch(console.error);
+			window.onhashchange = function() {
+				util.waitForWindowLoad()
+					.then(function() {
+						if(location.hash.length > 1) {
+							document.getElementById('deckList').style.display = "none";
+							var deckInfo = document.getElementById('deckInfo');
+							deckInfo.style.display = "initial";
+							document.getElementById('deckName').textContent = location.hash;
+						}
+						else {
+							document.getElementById('deckList').style.display = "initial";
+							document.getElementById('deckInfo').style.display = "none";
+						}
+					});
+			};
+			if(location.hash) window.onhashchange();
 		</script>
 		<style type="text/css">
 			.collectionCard {
@@ -64,12 +96,24 @@
 			#deckInfo {
 				display: none
 			}
+			.sidebarFiller {
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%
+			}
 		</style>
 	</head>
 	<body>
 		{{ PAGE_HEADER }}
 		<div class="container-fluid sidebarBody" style="height: 100%">
 			<div class="leftSidebar col-xs-2 col-lg-1" id="leftSidebar">
+				<div id="deckList" class="sidebarFiller list-group"></div>
+				<div id="deckInfo" class="sidebarFiller">
+					<a type="button" class="close" id="backBtn" href="#"><span aria-hidden="true">&times;</span></a>
+					<h3 id="deckName"></h3>
+				</div>
 			</div>
 			<div id="mainContent" class="container-fluid">
 

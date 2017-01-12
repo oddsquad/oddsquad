@@ -17,6 +17,8 @@ module.exports = {
 		"theme": true,
 		"component-animations": true,
 		"normalize": true,
-		"grid": true
+		"grid": true,
+		"list-group": true,
+		"close": true
 	}
 };
