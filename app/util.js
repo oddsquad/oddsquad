@@ -26,10 +26,30 @@ var util = {
 		if(!classes) classes = "";
 		var svg = document.createElement('svg');
 		if(container) container.appendChild(svg);
+		var path = url.split('/');
 		svg.className = classes;
 		return util.request("GET", url)
 		.then(function(res) {
-			svg.innerHTML = res;
+			var newOutput = "";
+			var remaining = res;
+			while(true) {
+				var ind = remaining.indexOf("xlink:href");
+				if(ind < 0) {
+					newOutput += remaining;
+					break;
+				}
+				newOutput += remaining.substring(0, ind+12);
+				remaining = remaining.substring(ind+12);
+				var i2 = remaining.indexOf('"');
+				var subURL = remaining.substring(0, i2);
+				if(subURL[0] != "/") {
+					subURL = path.slice(0, -1).join("/")+"/"+subURL;
+				}
+				newOutput += subURL;
+				remaining = remaining.substring(i2);
+			}
+			console.log(newOutput);
+			svg.innerHTML = newOutput;
 			return svg;
 		});
 	},
