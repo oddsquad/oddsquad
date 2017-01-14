@@ -42,7 +42,7 @@ var util = {
 				remaining = remaining.substring(ind+12);
 				var i2 = remaining.indexOf('"');
 				var subURL = remaining.substring(0, i2);
-				if(subURL[0] != "/") {
+				if(subURL[0] != "/" && subURL[0] != "#") {
 					subURL = path.slice(0, -1).join("/")+"/"+subURL;
 				}
 				newOutput += subURL;
