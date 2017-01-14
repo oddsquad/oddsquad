@@ -101,7 +101,8 @@ var handleWeb = function(req, res, POST, url) {
 		req: req,
 		fields: POST,
 		db: db,
-		CARD_DATA: CARD_DATA
+		CARD_DATA: CARD_DATA,
+		cookiejar: cookiejar
 	};
 	var util = {
 		die: die,
