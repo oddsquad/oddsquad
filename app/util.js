@@ -71,17 +71,24 @@ var util = {
 		}
 		return callback.promise;
 	},
+	loadCardInfo: function(id) {
+		return util.request("GET", "/api/rawCard?id="+id)
+		.then(JSON.parse);
+	},
 	loadCard: function(id, container, className) {
 		className = className || "";
 		return Q.all([
 			util.loadSVG("/api/cardArt?id="+id, container, className || ""),
-			util.request("GET", "/api/rawCard?id="+id)
+			util.loadCardInfo(id)
 		])
 			.then(function(data) {
-				var info = JSON.parse(data[1]);
+				var info = data[1];
 				data[0].contentDocument.getElementById('health').textContent = info.Health;
 				return {obj: data[0], info: info};
 			});
+	},
+	empty: function(elem) {
+		elem.textContent = "";
 	}
 };
 
