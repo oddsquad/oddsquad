@@ -325,6 +325,19 @@ var webserve = http.createServer(function(req, res) {
 
 require('./gameserver')(webserve);
 
+function getFileHash(filename) {
+	var deferred = Q.defer();
+	var hash = require('crypto').createHash('md5');
+	hash.setEncoding('hex');
+	var stream = fs.createReadStream(filename);
+	stream.on('end', function() {
+		hash.end();
+		deferred.resolve(hash.read());
+	});
+	stream.pipe(hash);
+	return deferred.promise;
+}
+
 console.log("Loading cards");
 Q.all([
 	fs.readdir(__dirname+"/data/cards").then(function(files) {
@@ -361,16 +374,18 @@ Q.all([
 			return Q.resolve();
 		}));
 	}),
-	fs.readdir(__dirname+"/includes").then(function(files) {
-		return Q.all(files.map(function(file) {
-			if(file.endsWith(".html")) {
-				return fs.readFile(__dirname+"/includes/"+file)
-				.then(function(content) {
-					TWIG_VARS[file.substring(0, file.length-5)] = content.toString();
-				});
-			}
-			return Q.resolve();
-		}));
+	getFileHash("dist/bundle-index.js").then(function(hash) {
+		return fs.readdir(__dirname+"/includes").then(function(files) {
+			return Q.all(files.map(function(file) {
+				if(file.endsWith(".html")) {
+					return fs.readFile(__dirname+"/includes/"+file)
+					.then(function(content) {
+						TWIG_VARS[file.substring(0, file.length-5)] = content.toString().replace("{hash-index}", hash);
+					});
+				}
+				return Q.resolve();
+			}));
+		})
 	})
 ]).then(function() {
 	webserve.listen(PORT);
