@@ -28,15 +28,16 @@
 							}
 						});
 						return Q.all(cards.map(function(e) {
-							return util.loadCard(e.card_id, document.getElementById('mainContent'), "collectionCard col-xs-4 col-md-3 col-lg-2")
+							return util.loadCard(e.card_id, "collectionCard col-xs-4 col-md-3 col-lg-2")
 								.then(function(obj) {
+									document.getElementById('mainContent').appendChild(obj.obj);
 									var svgNS = "http://www.w3.org/2000/svg";
 									var count = document.createElementNS(svgNS, "text");
 									count.textContent = "x"+e.count;
 									count.setAttribute("x", 95);
 									count.setAttribute("y", 145);
 									count.style.textAnchor = "end";
-									obj.obj.contentDocument.rootElement.appendChild(count);
+									obj.obj.firstElementChild.appendChild(count);
 								})
 								.catch(function(err) {
 									console.warn(err);

@@ -19,20 +19,19 @@ function completeWaitee(type, value) {
 
 var util = {
 	loadSVG: function(url, container, classes) {
-		var callback = Q.defer();
-		var obj = document.createElement('object');
-		obj.className = classes;
-		obj.onload = function() {
-			callback.resolve(this);
-		};
-		obj.onerror = function(e) {
-			console.log(e);
-			callback.reject(e);
-			container.removeChild(obj);
+		if(arguments.length < 3 || (!classes && typeof container === "string")) {
+			classes = container;
+			container = null;
 		}
-		obj.data = url;
-		container.appendChild(obj);
-		return callback.promise;
+		if(!classes) classes = "";
+		var svg = document.createElement('svg');
+		if(container) container.appendChild(svg);
+		svg.className = classes;
+		return util.request("GET", url)
+		.then(function(res) {
+			svg.innerHTML = res;
+			return svg;
+		});
 	},
 	request: function(method, url, formData) {
 		return new Promise(function(resolve, reject) {
@@ -75,15 +74,14 @@ var util = {
 		return util.request("GET", "/api/rawCard?id="+id)
 		.then(JSON.parse);
 	},
-	loadCard: function(id, container, className) {
-		className = className || "";
+	loadCard: function(id, container, classes) {
 		return Q.all([
-			util.loadSVG("/api/cardArt?id="+id, container, className || ""),
+			util.loadSVG("/api/cardArt?id="+id, container, classes),
 			util.loadCardInfo(id)
 		])
 			.then(function(data) {
 				var info = data[1];
-				data[0].contentDocument.getElementById('health').textContent = info.Health;
+				data[0].getElementsByClassName('health')[0].textContent = info.Health;
 				return {obj: data[0], info: info};
 			});
 	},
