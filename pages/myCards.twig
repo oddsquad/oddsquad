@@ -4,6 +4,31 @@
 		<title>My Collection</title>
 		{{ SCRIPTS }}
 		<script type="text/javascript">
+			function addDeckCard(card, name) {
+				var elem = document.createElement('li');
+				elem.className = "list-group-item";
+				document.getElementById('deckCards').appendChild(elem);
+				var close = document.createElement('a');
+				close.className = "close";
+				close.type = "button";
+				close.href = "javascript:void(0)";
+				close.appendChild(document.createTextNode('×'));
+				close.onclick = function() {
+					this.parentNode.parentNode.removeChild(this.parentNode);
+				};
+				elem.appendChild(close);
+				if(!name) {
+					(function(elem) {
+					util.loadCardInfo(card)
+						.then(function(data) {
+							elem.appendChild(document.createTextNode(data.Name));
+						});
+					})(elem);
+				}
+				else {
+					elem.appendChild(document.createTextNode(name));
+				}
+			}
 			util.request("GET", "/api/myCards")
 			.then(function(res) {
 				return util.waitForWindowLoad()
@@ -38,6 +63,9 @@
 									count.setAttribute("y", 145);
 									count.style.textAnchor = "end";
 									obj.obj.firstElementChild.appendChild(count);
+									obj.obj.onclick = function() {
+										addDeckCard(e.card_id, obj.info.Name);
+									};
 								})
 								.catch(function(err) {
 									console.warn(err);
@@ -83,24 +111,7 @@
 									loading.style.display = "none";
 									for(var i = 0; i < j.cards.length; i++) {
 										var card = j.cards[i];
-										var elem = document.createElement('li');
-										elem.className = "list-group-item";
-										cardlist.appendChild(elem);
-										var close = document.createElement('a');
-										close.className = "close";
-										close.type = "button";
-										close.href = "javascript:void(0)";
-										close.appendChild(document.createTextNode('×'));
-										close.onclick = function() {
-											this.parentNode.parentNode.removeChild(this.parentNode);
-										};
-										elem.appendChild(close);
-										(function(elem) {
-										util.loadCardInfo(card)
-											.then(function(data) {
-												elem.appendChild(document.createTextNode(data.Name));
-											});
-										})(elem);
+										addDeckCard(card);
 									}
 								});
 						}
