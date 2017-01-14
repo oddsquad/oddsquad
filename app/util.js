@@ -151,7 +151,11 @@ util.waitFor("user")
 			.then(function(coins) {
 				var coinSpan = document.createElement('span');
 				document.getElementById('coinTab').appendChild(coinSpan);
-				coinSpan.appendChild(document.createTextNode(coins));
+				var badge = document.createElement('span');
+				badge.className = "badge";
+				badge.id = "coinCount";
+				badge.textContent = coins;
+				coinSpan.appendChild(badge);
 				var coinImg = document.createElement('img');
 				coinImg.src = require('../data/art/oddball.svg');
 				coinImg.className = "coinImg";
@@ -161,7 +165,11 @@ util.waitFor("user")
 			.then(function(packs) {
 				var packSpan = document.createElement('span');
 				document.getElementById('packTab').appendChild(packSpan);
-				packSpan.appendChild(document.createTextNode(Object.keys(packs).length));
+				var badge = document.createElement('span');
+				badge.className = "badge";
+				badge.id = "packCount";
+				badge.textContent = Object.keys(packs).length;
+				packSpan.appendChild(badge);
 				var packImg = document.createElement('img');
 				packImg.src = require("../data/art/packs/randomMI.svg");
 				packImg.className = "packImg";

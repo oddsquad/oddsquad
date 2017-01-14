@@ -18,6 +18,8 @@
 				var highZIndex = 5;
 				var fd = new FormData();
 				fd.append('key', this.dataset.key);
+				var badge = document.getElementById('packCount');
+				badge.textContent = parseInt(badge.textContent)-1;
 				Q.all([
 					util.request("POST", "/api/openPack", fd),
 					Q.delay(1000)

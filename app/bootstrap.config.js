@@ -19,6 +19,7 @@ module.exports = {
 		"normalize": true,
 		"grid": true,
 		"list-group": true,
-		"close": true
+		"close": true,
+		"badges": true
 	}
 };
