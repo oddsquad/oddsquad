@@ -8,8 +8,10 @@
 				var elem = document.createElement('li');
 				elem.className = "list-group-item";
 				document.getElementById('deckCards').appendChild(elem);
+				var nameElem = document.createTextNode("...");
+				elem.appendChild(nameElem);
 				var close = document.createElement('a');
-				close.className = "close";
+				close.className = "close ml-auto";
 				close.type = "button";
 				close.href = "javascript:void(0)";
 				close.appendChild(document.createTextNode('×'));
@@ -21,12 +23,12 @@
 					(function(elem) {
 					util.loadCardInfo(card)
 						.then(function(data) {
-							elem.appendChild(document.createTextNode(data.Name));
+							nameElem.textContent = data.Name;
 						});
 					})(elem);
 				}
 				else {
-					elem.appendChild(document.createTextNode(name));
+					nameElem.textContent = name;
 				}
 			}
 			util.request("GET", "/api/myCards")
@@ -53,7 +55,7 @@
 							}
 						});
 						return Q.all(cards.map(function(e) {
-							return util.loadCard(e.card_id, "collectionCard col-xs-4 col-md-3 col-lg-2")
+							return util.loadCard(e.card_id, "collectionCard col-4 col-lg-3 col-xl-2")
 								.then(function(obj) {
 									document.getElementById('mainContent').appendChild(obj.obj);
 									var svgNS = "http://www.w3.org/2000/svg";
@@ -128,7 +130,6 @@
 				padding-bottom: 15px
 			}
 			#mainContent {
-				height: 100%;
 				position: relative;
 				overflow: auto
 			}
@@ -148,10 +149,10 @@
 			}
 		</style>
 	</head>
-	<body>
+	<body class="container-fluid">
 		{{ PAGE_HEADER }}
-		<div class="container-fluid sidebarBody" style="height: 100%">
-			<div class="leftSidebar col-xs-2 col-lg-1" id="leftSidebar">
+		<div class="sidebarBody" style="height: 100%">
+			<div class="leftSidebar col-2 col-xl-1" id="leftSidebar">
 				<div id="deckList" class="sidebarFiller list-group"></div>
 				<div id="deckInfo" class="sidebarFiller">
 					<a type="button" class="close" id="backBtn" href="#"><span aria-hidden="true">&times;</span></a>
@@ -160,8 +161,9 @@
 					<ul class="list-group" id="deckCards"></ul>
 				</div>
 			</div>
-			<div id="mainContent" class="container-fluid">
-
+			<div class="container-fluid col">
+				<div id="mainContent" class="row">
+				</div>
 			</div>
 		</div>
 	</body>

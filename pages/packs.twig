@@ -32,7 +32,7 @@
 							var deg = 360*i/cards.length+"deg";
 							var elem = document.createElement('div');
 							elem.style.transform = "translate(-50%,-50%) rotate("+deg+") translate("+RADIUS+") rotate(-"+deg+")";
-							elem.className = "card";
+							elem.className = "oscard";
 							elem.onmouseover = function() {
 								if(this.style.zIndex != highZIndex) {
 									this.style.zIndex = ++highZIndex;
@@ -52,7 +52,7 @@
 						list[0].parentNode.removeChild(list[0]);
 					}
 				};
-				remove(document.getElementsByClassName('card'));
+				remove(document.getElementsByClassName('oscard'));
 				document.getElementById('packCrack').style.display = "none";
 				document.getElementById('doneBtn').style.display = "none";
 				currentPack = null;
@@ -72,7 +72,7 @@
 			});
 		</script>
 		<style type="text/css">
-			.pack object, .card object, #packCrack {
+			.pack object, .oscard object, #packCrack {
 				pointer-events: none
 			}
 			#mainContent {
@@ -81,7 +81,7 @@
 			#mainContent .pack {
 				width: 25%
 			}
-			#mainContent .pack, #packCrack, #mainContent .card, #doneBtn {
+			#mainContent .pack, #packCrack, #mainContent .oscard, #doneBtn {
 				position: absolute;
 				left: 50%;
 				top: 50%;
@@ -95,18 +95,18 @@
 			#doneBtn {
 				z-index: 99
 			}
-			#mainContent .card {
+			#mainContent .oscard {
 				width: 20%
 			}
 		</style>
 	</head>
-	<body>
+	<body class="container-fluid">
 		{{ PAGE_HEADER }}
-		<div class="container-fluid sidebarBody" style="flex: 1 1 auto; height: 100%">
-			<div id="leftSidebar" style="background-color: red; height: 100%" class="col-xs-2 col-lg-1">
+		<div class="sidebarBody" style="flex: 1 1 auto; height: 100%">
+			<div id="leftSidebar" style="background-color: red; height: 100%" class="col-2 col-xl-1">
 				Loading...
 			</div>
-			<div id="mainContent">
+			<div id="mainContent" class="col">
 				<object id="packCrack" data="/data/art/animation/packCrack.svg"></object>
 				<button id="doneBtn" class="btn btn-primary" style="display: none" onclick="done()">Done</button>
 			</div>

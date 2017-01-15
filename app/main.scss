@@ -1,3 +1,5 @@
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
 body:not(.notLoggedIn) a.notLoggedIn,
 body:not(.loggedIn) a.loggedIn {
 	display: none !important
@@ -22,9 +24,10 @@ html {
 body {
 	height: 100%;
 	overflow: hidden;
-	padding-top: 60px
+	padding-top: 56px
 }
 .sidebarBody {
+	@extend .row;
 	padding-left: 0px
 }
 .dropdownArrow {

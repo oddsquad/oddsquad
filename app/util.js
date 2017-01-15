@@ -140,19 +140,15 @@ util.waitFor("user")
 	util.waitForWindowLoad()
 	.then(function() {
 		if(USER) {
-			document.body.className = "loggedIn";
+			document.body.className += " loggedIn";
 			var userTab = document.getElementById('userTab');
 			userTab.textContent = USER.name;
-			var caret = document.createElement('span');
-			caret.textContent = "\u25BE";
-			caret.className = "dropdownArrow";
-			userTab.appendChild(caret);
 			util.waitFor("coins")
 			.then(function(coins) {
 				var coinSpan = document.createElement('span');
 				document.getElementById('coinTab').appendChild(coinSpan);
 				var badge = document.createElement('span');
-				badge.className = "badge";
+				badge.className = "badge badge-pill badge-default";
 				badge.id = "coinCount";
 				badge.textContent = coins;
 				coinSpan.appendChild(badge);
@@ -166,7 +162,7 @@ util.waitFor("user")
 				var packSpan = document.createElement('span');
 				document.getElementById('packTab').appendChild(packSpan);
 				var badge = document.createElement('span');
-				badge.className = "badge";
+				badge.className = "badge badge-pill badge-default";
 				badge.id = "packCount";
 				badge.textContent = Object.keys(packs).length;
 				packSpan.appendChild(badge);
@@ -177,7 +173,7 @@ util.waitFor("user")
 			});
 		}
 		else {
-			document.body.className = "notLoggedIn";
+			document.body.className += " notLoggedIn";
 		}
 	});
 });

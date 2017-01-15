@@ -30,6 +30,10 @@ module.exports = {
 						loader: "svgo-loader"
 					}
 				]
+			},
+			{
+				test: /\.(eot|ttf|woff|woff2)$/,
+				use: "file-loader"
 			}
 		]
 	}
