@@ -323,7 +323,9 @@ var webserve = http.createServer(function(req, res) {
 	}
 });
 
-require('./gameserver')(webserve);
+require('./gameserver')(webserve, {
+	db: db
+});
 
 function getFileHash(filename) {
 	var deferred = Q.defer();
